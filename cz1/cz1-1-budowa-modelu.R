@@ -12,6 +12,8 @@ mieszkania <- read.csv(file = "https://raw.githubusercontent.com/STWUR/STWUR-201
 
 head(mieszkania)
 
+dim(mieszkania)
+
 group_by(mieszkania, dzielnica) %>% 
   summarise(length(dzielnica))
 
@@ -25,18 +27,53 @@ ggplot(mieszkania, aes(x = rok, y = cena_m2)) +
   theme_bw()
 
 ggplot(mieszkania, aes(x = rok, y = cena_m2)) +
-  stat_density2d(aes(alpha = ..level..), color = "black", contour = TRUE, geom = "polygon") +
+  stat_density2d(aes(alpha = ..level..), color = "black", contour = TRUE, 
+                 geom = "polygon") +
   facet_wrap(~ dzielnica) +
   theme_bw()
 
-ggplot(mieszkania, aes(x = rok, y = cena_m2)) +
-  geom_point() +
-  facet_wrap(~ dzielnica) +
-  theme_bw()
 
 # 1. Sprawdź w jakiej dzielnicy jest najwięcej mieszkń poniżej 5000 PLN za m2.
+
+filter(mieszkania, cena_m2 < 5000) %>% 
+  group_by(dzielnica) %>% 
+  summarise(length(dzielnica))
+
+x1 <- table(mieszkania[["dzielnica"]], mieszkania[["cena_m2"]] < 5000)
+
+x2 <- mutate(mieszkania, less5000 = cena_m2 < 5000) %>% 
+  group_by(dzielnica, less5000) %>% 
+  summarise(length(dzielnica))
+
+mieszkania[["dziel", exact = FALSE]]
+mieszkania$dziel
+
 # 2. Czy jest zależość między ceną za m^2 i piętrem na którym znajduje się mieszkanie?
 
+ggplot(mieszkania, aes(x = pietro, y = cena_m2)) +
+  geom_point()
+
+cor(mieszkania[["pietro"]], mieszkania[["cena_m2"]], method = "spearman")
+
+ggplot(mieszkania, aes(x = factor(pietro), y = cena_m2)) +
+  geom_boxplot()
+
+head(mieszkania)
+
+library(reshape2)
+
+melt(mieszkania, id.vars = c("dzielnica", "cena_m2")) %>% 
+  ggplot(aes(x = value, y = cena_m2)) +
+  geom_point() +
+  facet_wrap(~ dzielnica + variable, scales = "free_x")
+
+melt(mieszkania, id.vars = c("dzielnica", "cena_m2")) %>%
+  filter(variable %in% c("n_pokoj", "pietro", "pietro_maks")) %>% 
+  ggplot(aes(x = factor(value), y = cena_m2)) +
+  geom_boxplot() +
+  facet_wrap(~ dzielnica + variable, scales = "free_x")
+
+# model ------------------
 
 predict_price <- makeRegrTask(id = "price", 
                               data = mieszkania, target = "cena_m2")
