@@ -58,6 +58,21 @@ cor(mieszkania[["pietro"]], mieszkania[["cena_m2"]], method = "spearman")
 ggplot(mieszkania, aes(x = factor(pietro), y = cena_m2)) +
   geom_boxplot()
 
+head(mieszkania)
+
+library(reshape2)
+
+melt(mieszkania, id.vars = c("dzielnica", "cena_m2")) %>% 
+  ggplot(aes(x = value, y = cena_m2)) +
+  geom_point() +
+  facet_wrap(~ dzielnica + variable, scales = "free_x")
+
+melt(mieszkania, id.vars = c("dzielnica", "cena_m2")) %>%
+  filter(variable %in% c("n_pokoj", "pietro", "pietro_maks")) %>% 
+  ggplot(aes(x = factor(value), y = cena_m2)) +
+  geom_boxplot() +
+  facet_wrap(~ dzielnica + variable, scales = "free_x")
+
 # model ------------------
 
 predict_price <- makeRegrTask(id = "price", 
