@@ -1,4 +1,7 @@
 library(shiny)
+library(ranger)
+
+load("models.RData")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -11,10 +14,11 @@ ui <- fluidPage(
     sidebarPanel(
       sliderInput(inputId = "rok_budowy",
                   label = "Podaj zakres lat budowy",
-                  min = 1750,
+                  min = 1950,
                   max = 2018, 
-                  value = c(1988, 2000), 
-                  sep = "")
+                  value = c(1985, 2000), 
+                  sep = "", 
+                  step = 10)
     ),
     
     # Show a plot of the generated distribution
@@ -27,7 +31,17 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   output[["pred_table"]] <- renderTable({
-    data.frame(rok = input[["rok_budowy"]][1]:input[["rok_budowy"]][2])
+    new_data <- data.frame(n_pokoj = 3,
+                           metraz = 50,
+                           pietro = 1,
+                           pietro_maks = 2,
+                           dzielnica = "Krzyki",
+                           rok = seq(input[["rok_budowy"]][1],
+                                     input[["rok_budowy"]][2],
+                                     by = 5))
+    
+    
+    data.frame(new_data, cena_m2 = predict(model_best, new_data)[["predictions"]])
   })
 }
 
