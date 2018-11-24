@@ -1,11 +1,42 @@
 library(mlr)
 library(dplyr)
+library(ggplot2)
 
 set.seed(15390)
 
 mieszkania <- read.csv(file = "https://raw.githubusercontent.com/STWUR/STWUR-2017-06-07/master/data/mieszkania_dane.csv", 
                        encoding = "UTF-8") %>% 
   na.omit
+
+# poznajmy dane
+
+head(mieszkania)
+
+group_by(mieszkania, dzielnica) %>% 
+  summarise(length(dzielnica))
+
+group_by(mieszkania, dzielnica) %>% 
+  summarise(min(cena_m2),
+            max(cena_m2))
+
+ggplot(mieszkania, aes(x = rok, y = cena_m2)) +
+  geom_point(alpha = 0.3) +
+  facet_wrap(~ dzielnica) +
+  theme_bw()
+
+ggplot(mieszkania, aes(x = rok, y = cena_m2)) +
+  stat_density2d(aes(alpha = ..level..), color = "black", contour = TRUE, geom = "polygon") +
+  facet_wrap(~ dzielnica) +
+  theme_bw()
+
+ggplot(mieszkania, aes(x = rok, y = cena_m2)) +
+  geom_point() +
+  facet_wrap(~ dzielnica) +
+  theme_bw()
+
+# 1. Sprawdź w jakiej dzielnicy jest najwięcej mieszkń poniżej 5000 PLN za m2.
+# 2. Czy jest zależość między ceną za m^2 i piętrem na którym znajduje się mieszkanie?
+
 
 predict_price <- makeRegrTask(id = "price", 
                               data = mieszkania, target = "cena_m2")
@@ -22,9 +53,9 @@ parameters_set <- makeParamSet(
 )
 
 optimal_rf <- tuneParams(learnerRF, predict_price, cv_scheme, 
-                         par.set = parameters_set, control = makeTuneControlGrid(resolution = 3L))
+                         par.set = parameters_set, control = makeTuneControlRandom(maxit = 10))
 
-library(ggplot2)
+# Porownaj makeTuneControlRandom(maxit = 5) i makeTuneControlGrid(resolution = 2L). Która metoda daje lepszy model? 
 
 generateHyperParsEffectData(optimal_rf)[["data"]] %>% 
   ggplot(aes(x = num.trees, y = min.node.size, 
@@ -59,5 +90,6 @@ plotResidualDensity(audit_best, audit_worst)
 plotScaleLocation(audit_best, audit_worst)
 plotTwoSidedECDF(audit_best, audit_worst)
 
-
 save(model_best, model_worst, file = "./cz2/models.RData")
+
+# Stwórz optymalny model optymalizując również parametr mtry. Wykorzystując auditora porównaj go z model_best i model_worst.

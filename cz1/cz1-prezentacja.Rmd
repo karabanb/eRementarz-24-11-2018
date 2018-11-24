@@ -1,0 +1,55 @@
+---
+title: "Postmodelizm cz 1."
+author: "Michał Burdukiewicz"
+date: "24 listopada 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## STWUR
+
+<img src="https://stwur.github.io/STWUR//images/stwur_10_18-01.svg" height="40%" width="40%"/>
+
+Pierwsze spotkanie: 30-01-2017.
+
+## Sponsorzy
+
+ - Wydział Biotechnologii Uniwersytetu Wrocławskiego,
+ - Kruk SA,
+ - Fundacja Why R? (whyr.pl)
+ 
+## Plan spotkania
+
+ - 10:00 - 11:15: eksploracja danych i budowa modelu,
+ - 11:15 - 11:35: przerwa,
+ - 11:35 - 13:00: tuning i analiza modelu,
+ - 13:00 - 13:45: pizza,
+ - 13:45 - 14:30: podstawy Shiny,
+ - 14:45 - 15:45: budowa naszej własnej aplikacji.
+ - po 16:00: integracja w Cybermachinie.
+ 
+## Postmodelizm
+ 
+<img src="https://docs.microsoft.com/en-us/azure/machine-learning/team-data-science-process/media/overview/tdsp-lifecycle2.png" height="66%" width="66%"/> 
+
+Za: microsoft.com
+
+## Drzewa regresyjne
+
+<img src="https://i1.wp.com/i.imgur.com/6HhbRVL.png?zoom=1.5&w=450&ssl=1" height="66%" width="66%"/> 
+
+Za: Gabriel Vasconcelos (https://insightr.wordpress.com)
+
+## Lasy losowe
+
+<img src="https://www.researchgate.net/profile/Victor_Rodriguez-Galiano/publication/303835073/figure/fig3/AS:377949833449472@1467121670301/The-flowchart-of-random-forest-RF-for-regression-adapted-from-Rodriguez-Galiano-et.png" height="66%" width="66%"/>
+
+## Tuning
+
+Poszukiwnanie optymalnej kombinacji hiperparametrów:
+
+ - oparty na siatce,
+ - losowy.
